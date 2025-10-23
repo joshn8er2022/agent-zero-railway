@@ -193,6 +193,12 @@ async def serve_index():
     )
     return index
 
+# Health check endpoint for Railway
+@webapp.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint for Railway deployment."""
+    return {"status": "healthy", "service": "agent-zero"}, 200
+
 def run():
     PrintStyle().print("Initializing framework...")
 
