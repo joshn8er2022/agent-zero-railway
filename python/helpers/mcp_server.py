@@ -306,8 +306,8 @@ class DynamicMcpProxy:
                 server=mcp_server,
                 message_path=mcp_server.settings.message_path,
                 sse_path=mcp_server.settings.sse_path,
-                # auth_server_provider removed in fastmcp 2.12.5
-                # auth_settings removed in fastmcp 2.12.5
+                auth_server_provider=mcp_server._auth_server_provider,
+                auth_settings=mcp_server.settings.auth,
                 debug=mcp_server.settings.debug,
                 routes=mcp_server._additional_http_routes,
                 middleware=[Middleware(BaseHTTPMiddleware, dispatch=mcp_middleware)],
@@ -317,13 +317,13 @@ class DynamicMcpProxy:
             # doesn't work properly in our Flask/Werkzeug environment
             self.http_app = self._create_custom_http_app(
                 http_path,
-                # auth_server_provider removed in fastmcp 2.12.5
-                # auth_settings removed in fastmcp 2.12.5
+                mcp_server._auth_server_provider,
+                mcp_server.settings.auth,
                 mcp_server.settings.debug,
                 mcp_server._additional_http_routes,
             )
 
-    def _create_custom_http_app(self, streamable_http_path, debug, routes):
+    def _create_custom_http_app(self, streamable_http_path, auth_server_provider, auth_settings, debug, routes):
         """Create a custom HTTP app that manages the session manager manually."""
         from fastmcp.server.http import setup_auth_middleware_and_routes, create_base_app
         from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
