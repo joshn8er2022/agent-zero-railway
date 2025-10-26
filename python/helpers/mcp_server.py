@@ -305,8 +305,7 @@ class DynamicMcpProxy:
             self.sse_app = create_sse_app(
                 server=mcp_server,
                 message_path=mcp_server.settings.message_path,
-                sse_path=mcp_server.settings.sse_path,
-                auth_server_provider=mcp_server._auth_server_provider,
+                sse_path=mcp_server.settings.sse_path,# 
                 auth_settings=mcp_server.settings.auth,
                 debug=mcp_server.settings.debug,
                 routes=mcp_server._additional_http_routes,
@@ -316,16 +315,16 @@ class DynamicMcpProxy:
             # For HTTP, we need to create a custom app since the lifespan manager
             # doesn't work properly in our Flask/Werkzeug environment
             self.http_app = self._create_custom_http_app(
-                http_path,
-                mcp_server._auth_server_provider,
+                http_path,# 
                 mcp_server.settings.auth,
                 mcp_server.settings.debug,
                 mcp_server._additional_http_routes,
             )
 
     def _create_custom_http_app(self, streamable_http_path, auth_server_provider, auth_settings, debug, routes):
-        """Create a custom HTTP app that manages the session manager manually."""
-        from fastmcp.server.http import setup_auth_middleware_and_routes, create_base_app
+        """Create a custom HTTP app that manages the session manager manually."""# 
+        from fastmcp.server.http import create_base_app
+        from fastmcp.server.http import create_base_app
         from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
         from starlette.routing import Mount
         from mcp.server.auth.middleware.bearer_auth import RequireAuthMiddleware
@@ -358,10 +357,9 @@ class DynamicMcpProxy:
             if self.http_session_manager:
                 await self.http_session_manager.handle_request(scope, receive, send)
 
-        # Get auth middleware and routes
-        auth_middleware, auth_routes, required_scopes = setup_auth_middleware_and_routes(
+        # Get auth middleware and routes# 
             auth_server_provider, auth_settings
-        )
+        )  # Removed: deprecated in fastmcp >=2.12.5
 
         server_routes.extend(auth_routes)
         server_middleware.extend(auth_middleware)
